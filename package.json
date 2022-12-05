@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "atob": "^2.1.2",
+    "axios": "^1.2.0",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
