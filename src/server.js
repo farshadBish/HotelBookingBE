@@ -13,7 +13,7 @@ const port = process.env.PORT || 3001
 
 // MiddleWares
 
-const whitelist = [process.env.FE_DEV_URL,process.env.FE_PROD_URL]
+const whitelist = [process.env.FE_DEV_URL,process.env.FE_PROD_URL,process.env.FE_SECOND_URL]
 
 server.use(cors({origin : (origin,corsNext) => {
   console.log("ORIGIN: ", origin);
