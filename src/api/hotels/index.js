@@ -9,7 +9,7 @@ import q2m from "query-to-mongo"
 
 const hotelsRouter = express.Router();
 
-hotelsRouter.post("/", async (req, res, next) => {
+hotelsRouter.post("/", JWTAuthMiddleware, async (req, res, next) => {
     try {
       const newUser = new HotelModel(req.body); // here mongoose validation happens
       const { _id } = await newUser.save(); // here the validated record is saved
