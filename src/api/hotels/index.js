@@ -18,13 +18,18 @@ hotelsRouter.post("/", async (req, res, next) => {
       next(error);
     }
   });
-  
   hotelsRouter.get(
     "/",
     async (req, res, next) => {
       try {
-        const users = await HotelModel.find();
-        res.send(users);
+        const mongoQuery = q2m(req.query)
+        const total = await HotelModel.countDocuments(mongoQuery.criteria) 
+        const allHotels = await HotelModel.find(mongoQuery.criteria,mongoQuery.options.fields)
+        .limit(mongoQuery.options.limit)
+        .skip(mongoQuery.options.skip)
+        .sort(mongoQuery.options.sort)
+        ;
+        res.send({allHotels , total});
       } catch (error) {
         next(error);
       }

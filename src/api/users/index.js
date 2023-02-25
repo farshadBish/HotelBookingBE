@@ -347,23 +347,4 @@ usersRouter.delete(
   }
 );
 
-// Hotels
-usersRouter.get(
-  "/",
-  async (req, res, next) => {
-    try {
-      const mongoQuery = q2m(req.query)
-      const total = await HotelModel.countDocuments(mongoQuery.criteria) 
-      const allHotels = await HotelModel.find(mongoQuery.criteria,mongoQuery.options.fields)
-      .limit(mongoQuery.options.limit)
-      .skip(mongoQuery.options.skip)
-      .sort(mongoQuery.options.sort)
-      ;
-      res.send({allHotels , total});
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-
 export default usersRouter;
