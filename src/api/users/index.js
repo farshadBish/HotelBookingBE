@@ -1,11 +1,12 @@
 import express from "express";
 import createError from "http-errors";
-import { adminOnlyMiddleware } from "../../lib/admin.js";
+import { adminOnlyMiddleware , hotelOwnerOnlyMiddleware } from "../../lib/admin.js";
 import { JWTAuthMiddleware } from "../../lib/token.js";
 import { createAccessToken } from "../../lib/tools.js";
 import UsersModel from "./model.js";
 import RoomsModel from "../bookedRooms/model.js";
-import axios from "axios";
+import HotelModel from "../hotels/model.js";
+import q2m from "query-to-mongo"
 
 const usersRouter = express.Router();
 // usersRouter.post("/hotelApi", (req, res) => {
@@ -45,8 +46,21 @@ usersRouter.get(
   adminOnlyMiddleware,
   async (req, res, next) => {
     try {
-      const users = await UsersModel.find();
+      const users = await UsersModel.find().populate({ path: "hotels" });
       res.send(users);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+usersRouter.get(
+  "/bookedRooms",
+  JWTAuthMiddleware,
+  adminOnlyMiddleware,
+  async (req, res, next) => {
+    try {
+      const roomsThatBooked = await UsersModel.find();
+      res.send(roomsThatBooked.roomsBooked);
     } catch (error) {
       next(error);
     }
@@ -55,7 +69,7 @@ usersRouter.get(
 
 usersRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
   try {
-    const user = await UsersModel.findById(req.user._id);
+    const user = await UsersModel.findById(req.user._id).populate({ path: "hotels" });
     if (user) {
       res.send(user);
     } else {
@@ -267,19 +281,7 @@ usersRouter.delete(
     }
   }
 );
-usersRouter.get(
-  "/bookedRooms",
-  JWTAuthMiddleware,
-  adminOnlyMiddleware,
-  async (req, res, next) => {
-    try {
-      const roomsThatBooked = await UsersModel.find();
-      res.send(roomsThatBooked.roomsBooked);
-    } catch (error) {
-      next(error);
-    }
-  }
-);
+
 usersRouter.get("/:userId/bookedRooms");
 
 usersRouter.put(
@@ -345,5 +347,23 @@ usersRouter.delete(
   }
 );
 
+// Hotels
+usersRouter.get(
+  "/",
+  async (req, res, next) => {
+    try {
+      const mongoQuery = q2m(req.query)
+      const total = await HotelModel.countDocuments(mongoQuery.criteria) 
+      const allHotels = await HotelModel.find(mongoQuery.criteria,mongoQuery.options.fields)
+      .limit(mongoQuery.options.limit)
+      .skip(mongoQuery.options.skip)
+      .sort(mongoQuery.options.sort)
+      ;
+      res.send({allHotels , total});
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default usersRouter;

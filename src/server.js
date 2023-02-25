@@ -6,6 +6,7 @@ import { forbiddenErrorHandler, genericErroHandler, notFoundErrorHandler, unauth
 import usersRouter from "./api/users/index.js"
 import roomsRouter from "./api/bookedRooms/index.js"
 import createHttpError from "http-errors"
+import hotelsRouter from "./api/hotels/index.js"
 
 
 const server = express()
@@ -31,7 +32,7 @@ server.use(express.json())
 
 server.use("/users",usersRouter)
 server.use("/rooms",roomsRouter)
-
+server.use("/hotels",hotelsRouter)
 // server.use("/users",usersRouter)
 
 // ErrorHandlers

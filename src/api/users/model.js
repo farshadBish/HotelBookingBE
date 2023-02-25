@@ -6,16 +6,22 @@ const { Schema, model } = mongoose
 
 const UserSchema = new Schema(
   {
-    username: { type: String, required: true },
+    username: { type: String, required: true},
     address: {type:String,required:true},
-    email: { type: String, required: true },
+    email: { type: String, required: true},
     password: { type: String, required: true },
-    role: { type: String, enum: ["User", "Admin"], default: "User" },
+    role: { type: String, enum: ["User", "Admin","Owner"], default: "User" },
 
     roomsBooked: [
       {
-      hotelName: { type: String, required: true },
-      country: { type: String, required: true },
+      hotelName: { 
+        type: String,
+        required: true 
+      },
+      country: { 
+        type: String, 
+        required: true 
+      },
       city: { type: String, required: true},
       roomName: { type: String, required: true },
       email: { type: String, required: true },
@@ -24,12 +30,17 @@ const UserSchema = new Schema(
       departureDate: { type: String, required: true },
     }
       ],
-      
+      hotels: { type: Schema.Types.ObjectId, ref: "Hotel" }
   },
   {
     timestamps: true,
   }
 )
+
+// function arrayLimit(val) {
+//   return val.length <= 10;
+// }
+
 UserSchema.pre("save", async function (next) {
     // BEFORE saving the user in db, execute a function (in this case hash the password)
     // I am NOT using an arrow function here because of "this" (it would be undefined in case of arrow function)
