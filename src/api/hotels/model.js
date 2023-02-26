@@ -13,6 +13,10 @@ const hotelsSchema = new Schema(
         country:{type: String, required: true},
         address: {type: String, required: true},
         postalCode:{type: Number, required: true},
+        email: {type: String, required: true},
+        phoneNumber: {type: Number, required: true},
+        checkIn: {type: String, required: true},
+        checkOut: {type: String, required: true},
         roomCount:{type: Number, required: true},
         hotelAminities: [{type: String, required: true}],
         roomTypes:[
