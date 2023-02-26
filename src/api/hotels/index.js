@@ -38,8 +38,6 @@ hotelsRouter.post("/", JWTAuthMiddleware, async (req, res, next) => {
   
   hotelsRouter.get(
     "/:hotelId",
-    JWTAuthMiddleware,
-    adminOnlyMiddleware,
     async (req, res, next) => {
       try {
         const user = await HotelModel.findById(req.params.hotelId);
