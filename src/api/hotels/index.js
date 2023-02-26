@@ -40,9 +40,9 @@ hotelsRouter.post("/", JWTAuthMiddleware, async (req, res, next) => {
     "/:hotelId",
     async (req, res, next) => {
       try {
-        const user = await HotelModel.findById(req.params.hotelId);
-        if (user) {
-          res.send({ currentRequestingUser: req.user, user });
+        const hotel = await HotelModel.findById(req.params.hotelId);
+        if (hotel) {
+          res.send({ hotelInfo: hotel });
         } else {
           next(createError(404, `User with id ${req.params.hotelId} not found!`));
         }
